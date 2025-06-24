@@ -15,9 +15,9 @@ const BusinessSchema = z.object({
   name: z.string().describe('The name of the business.'),
   address: z.string().describe('The full address of the business.'),
   category: z.string().describe('The category of the business.'),
-  website: z.string().url().describe('The business website URL.'),
+  website: z.string().describe('The business website URL.'),
   phone: z.string().describe('The business phone number.'),
-  email: z.string().email().describe('The business email address.'),
+  email: z.string().describe('The business email address.'),
   rating: z.number().min(1).max(5).describe('The business rating, from 1 to 5.'),
   openingHours: z.string().describe('The business opening hours (e.g., "Open now", "Closed").'),
   location: z.object({
