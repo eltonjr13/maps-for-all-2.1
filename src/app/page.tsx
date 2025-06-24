@@ -33,10 +33,14 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-4 md:p-6 lg:p-8">
-      <div className="flex flex-col gap-6 h-full">
-        <SearchPanel onSearch={handleSearch} isLoading={isLoading} />
-        <ResultsPanel businesses={results} isLoading={isLoading} hasSearched={hasSearched} />
+    <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-8">
+        <aside className="lg:col-span-1 lg:sticky lg:top-24 h-fit mb-8 lg:mb-0">
+          <SearchPanel onSearch={handleSearch} isLoading={isLoading} />
+        </aside>
+        <main className="lg:col-span-2">
+          <ResultsPanel businesses={results} isLoading={isLoading} hasSearched={hasSearched} />
+        </main>
       </div>
     </div>
   );
