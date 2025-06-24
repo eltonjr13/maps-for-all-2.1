@@ -23,7 +23,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased" suppressHydrationWarning>
-        <LightningBackground speed={0.4} intensity={0.7} size={2.0} />
+        <LightningBackground hue={55} xOffset={0} speed={0.7} intensity={0.8} size={2.1} />
         <div className="relative z-10 flex flex-col min-h-screen">
           <AppHeader />
           <main className="flex-1">
