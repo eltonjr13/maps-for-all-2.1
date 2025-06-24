@@ -48,7 +48,7 @@ const BusinessCard = ({ business }: { business: Business }) => {
   const hasWhatsApp = whatsAppNumber.length >= 10;
 
   return (
-    <Card className="bg-black/35 border-white/15 backdrop-blur-[10px] hover:border-primary hover:backdrop-blur-[12px] transition-all duration-300">
+    <Card className="bg-black/60 border-white/15 backdrop-blur-[10px] hover:border-primary hover:backdrop-blur-[12px] transition-all duration-300">
       <CardHeader>
         <CardTitle className="font-headline text-lg text-foreground">{business.name}</CardTitle>
       </CardHeader>
@@ -123,7 +123,7 @@ export function ResultsPanel({ businesses, isLoading, hasSearched }: ResultsPane
       <div className="flex-1 space-y-4 overflow-y-auto pr-2 -mr-2">
         {isLoading && <LoadingSkeleton />}
         {!isLoading && hasSearched && businesses.length === 0 && (
-            <Card className="text-center p-8 bg-black/35 backdrop-blur-[10px] border-border">
+            <Card className="text-center p-8 bg-black/60 backdrop-blur-[10px] border-border">
                 <Building2 className="mx-auto h-12 w-12 text-muted-foreground" />
                 <h3 className="mt-4 text-lg font-medium font-headline">Nenhuma Empresa Encontrada</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
