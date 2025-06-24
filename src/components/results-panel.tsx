@@ -3,7 +3,8 @@
 import type { Business } from '@/types';
 import { downloadCsv } from '@/lib/csv';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardTitle } from '@/components/ui/card';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Download, Globe, Mail, MapPin, Phone, Star, Tag, Clock, Building2 } from 'lucide-react';
@@ -56,59 +57,50 @@ const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
-const BusinessCard = ({ business }: { business: Business }) => {
+const BusinessCardAccordion = ({ business }: { business: Business }) => {
   const hasWhatsApp = !!business.whatsappLink;
 
   return (
-    <Card className="bg-black/[.85] border-white/15 backdrop-blur-[10px] hover:border-primary hover:backdrop-blur-[12px] transition-all duration-300">
-      <CardHeader>
-        <CardTitle className="font-headline text-lg text-foreground">{business.name}</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <InfoLine icon={Tag} text={business.category} />
-        <InfoLine icon={MapPin} text={business.address} />
-        <Separator />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <InfoLine icon={Globe} text={business.website} />
-          <InfoLine icon={Phone} text={business.phone} />
-          <InfoLine icon={Phone} text={business.internationalPhone} />
-          <InfoLine icon={Mail} text={business.email} href={business.email ? `mailto:${business.email}` : undefined} />
-          <InfoLine icon={Star} text={business.rating ? `${business.rating} / 5` : undefined} />
-          <InfoLine icon={Clock} text={business.openingHours} />
-        </div>
-        {hasWhatsApp && (
-          <div className="pt-2">
-            <Button asChild className="w-full" aria-label={`Chamar ${business.name} no WhatsApp`}>
-              <a href={business.whatsappLink} target="_blank" rel="noopener noreferrer">
-                <WhatsAppIcon className="mr-2 h-5 w-5" />
-                Chamar no WhatsApp
-              </a>
-            </Button>
+    <AccordionItem value={business.id} className="border-none">
+      <Card className="bg-black/[.85] border-white/15 backdrop-blur-[10px] hover:border-primary hover:backdrop-blur-[12px] transition-all duration-300 overflow-hidden">
+        <AccordionTrigger className="w-full p-6 text-left hover:no-underline">
+          <CardTitle className="font-headline text-lg text-foreground">{business.name}</CardTitle>
+        </AccordionTrigger>
+        <AccordionContent>
+          <div className="px-6 pb-6 space-y-3">
+            <InfoLine icon={Tag} text={business.category} />
+            <InfoLine icon={MapPin} text={business.address} />
+            <Separator />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <InfoLine icon={Globe} text={business.website} />
+              <InfoLine icon={Phone} text={business.phone} />
+              <InfoLine icon={Phone} text={business.internationalPhone} />
+              <InfoLine icon={Mail} text={business.email} href={business.email ? `mailto:${business.email}` : undefined} />
+              <InfoLine icon={Star} text={business.rating ? `${business.rating} / 5` : undefined} />
+              <InfoLine icon={Clock} text={business.openingHours} />
+            </div>
+            {hasWhatsApp && (
+              <div className="pt-2">
+                <Button asChild className="w-full" aria-label={`Chamar ${business.name} no WhatsApp`}>
+                  <a href={business.whatsappLink} target="_blank" rel="noopener noreferrer">
+                    <WhatsAppIcon className="mr-2 h-5 w-5" />
+                    Chamar no WhatsApp
+                  </a>
+                </Button>
+              </div>
+            )}
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </AccordionContent>
+      </Card>
+    </AccordionItem>
   );
 };
 
 const LoadingSkeleton = () => (
   <div className="space-y-4">
-    {[...Array(3)].map((_, i) => (
-      <Card key={i}>
-        <CardHeader>
-          <Skeleton className="h-6 w-3/4" />
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <Skeleton className="h-4 w-1/2" />
-          <Skeleton className="h-4 w-full" />
-          <Separator />
-          <div className="grid grid-cols-2 gap-3">
-            <Skeleton className="h-4 w-5/6" />
-            <Skeleton className="h-4 w-5/6" />
-            <Skeleton className="h-4 w-5/6" />
-            <Skeleton className="h-4 w-5/6" />
-          </div>
-        </CardContent>
+    {[...Array(5)].map((_, i) => (
+      <Card key={i} className="bg-black/[.85] border-white/15 backdrop-blur-[10px] p-6">
+        <Skeleton className="h-6 w-3/4" />
       </Card>
     ))}
   </div>
@@ -145,11 +137,11 @@ export function ResultsPanel({ businesses, isLoading, hasSearched }: ResultsPane
             </Card>
         )}
         {!isLoading && businesses.length > 0 && (
-          <div className="space-y-4">
+          <Accordion type="single" collapsible className="space-y-4">
             {businesses.map(business => (
-              <BusinessCard key={business.id} business={business} />
+              <BusinessCardAccordion key={business.id} business={business} />
             ))}
-          </div>
+          </Accordion>
         )}
       </div>
     </div>

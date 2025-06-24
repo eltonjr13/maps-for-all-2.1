@@ -50,7 +50,7 @@ const prompt = ai.definePrompt({
   output: {schema: SearchLeadsOutputSchema},
   prompt: `Você é um assistente de diretório de negócios que funciona como a API do Google Maps Places.
   
-  Com base na localização, nicho de negócio e raio de busca fornecidos, gere uma lista realista de 5 a 10 empresas que correspondam aos critérios.
+  Com base na localização, nicho de negócio e raio de busca fornecidos, gere uma lista realista de 10 a 16 empresas que correspondam aos critérios.
   
   Para cada empresa, forneça todos os detalhes necessários conforme especificado no esquema de saída: id, nome, endereço, categoria, site, telefone formatado (phone), telefone internacional E.164 (internationalPhone), e-mail, avaliação, horário de funcionamento e localização.
   
