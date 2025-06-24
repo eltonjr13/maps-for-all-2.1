@@ -17,7 +17,15 @@ interface ResultsPanelProps {
 const InfoLine = ({ icon: Icon, text, href }: { icon: React.ElementType, text?: string | number, href?: string }) => {
   if (!text) return null;
 
-  const linkHref = href || (typeof text === 'string' && (text.startsWith('http') || text.startsWith('www')) ? (text.startsWith('www') ? `https://${text}` : text) : undefined);
+  let linkHref = href;
+  if (!linkHref && typeof text === 'string') {
+    if (Icon === Phone) {
+      linkHref = `tel:${text.replace(/[^\d+]/g, '')}`;
+    } else if (text.startsWith('http') || text.startsWith('www')) {
+      linkHref = text.startsWith('www') ? `https://${text}` : text;
+    }
+  }
+
 
   return (
     <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -63,6 +71,7 @@ const BusinessCard = ({ business }: { business: Business }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <InfoLine icon={Globe} text={business.website} />
           <InfoLine icon={Phone} text={business.phone} />
+          <InfoLine icon={Phone} text={business.internationalPhone} />
           <InfoLine icon={Mail} text={business.email} href={business.email ? `mailto:${business.email}` : undefined} />
           <InfoLine icon={Star} text={business.rating ? `${business.rating} / 5` : undefined} />
           <InfoLine icon={Clock} text={business.openingHours} />
