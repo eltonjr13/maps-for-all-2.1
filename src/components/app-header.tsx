@@ -9,11 +9,11 @@ export function AppHeader() {
         <div className="flex items-center gap-2">
           <Compass className="h-7 w-7 text-primary" />
           <h1 className="text-2xl font-bold font-headline text-foreground">
-            Lead Seeker
+            Buscador de Leads
           </h1>
         </div>
         <div className="flex items-center gap-4">
-            <Button variant="ghost">Login</Button>
+            <Button variant="ghost">Entrar</Button>
             <Avatar>
                 <AvatarImage src="https://placehold.co/40x40" />
                 <AvatarFallback>U</AvatarFallback>

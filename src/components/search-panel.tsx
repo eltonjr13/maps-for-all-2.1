@@ -15,7 +15,7 @@ interface SearchPanelProps {
 }
 
 export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
-  const [location, setLocation] = useState('New York, NY');
+  const [location, setLocation] = useState('São Paulo, SP');
   const [niche, setNiche] = useState('all');
   const [radius, setRadius] = useState([5]);
 
@@ -29,19 +29,19 @@ export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
       <CardHeader>
         <CardTitle className="font-headline text-2xl flex items-center gap-2">
           <Filter className="w-6 h-6 text-primary" />
-          Find Your Next Lead
+          Encontre seu Próximo Lead
         </CardTitle>
-        <CardDescription>Enter a location and niche to start prospecting.</CardDescription>
+        <CardDescription>Insira um local e um nicho para iniciar a prospecção.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="location">Location</Label>
+            <Label htmlFor="location">Localização</Label>
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input 
                 id="location" 
-                placeholder="City, address, or coordinates" 
+                placeholder="Cidade, endereço ou coordenadas" 
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 className="pl-10"
@@ -50,23 +50,23 @@ export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="niche">Business Niche</Label>
+            <Label htmlFor="niche">Nicho de Negócio</Label>
             <Select value={niche} onValueChange={setNiche}>
               <SelectTrigger id="niche">
-                <SelectValue placeholder="Select a niche" />
+                <SelectValue placeholder="Selecione um nicho" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Niches</SelectItem>
-                <SelectItem value="accounting">Accounting</SelectItem>
-                <SelectItem value="medical clinic">Medical Clinics</SelectItem>
-                <SelectItem value="industry">Industries</SelectItem>
-                <SelectItem value="corporate restaurant">Corporate Restaurants</SelectItem>
+                <SelectItem value="all">Todos os Nichos</SelectItem>
+                <SelectItem value="accounting">Contabilidade</SelectItem>
+                <SelectItem value="medical clinic">Clínicas Médicas</SelectItem>
+                <SelectItem value="industry">Indústrias</SelectItem>
+                <SelectItem value="corporate restaurant">Restaurantes Corporativos</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="radius">Search Radius: {radius[0]} km</Label>
+            <Label htmlFor="radius">Raio de Busca: {radius[0]} km</Label>
             <Slider 
               id="radius"
               min={1} 
@@ -81,12 +81,12 @@ export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Searching...
+                Buscando...
               </>
             ) : (
               <>
                 <Search className="mr-2 h-4 w-4" />
-                Search
+                Buscar
               </>
             )}
           </Button>

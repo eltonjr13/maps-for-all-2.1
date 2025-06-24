@@ -26,8 +26,8 @@ export default function Home() {
       console.error('Failed to search for leads:', error);
       toast({
         variant: 'destructive',
-        title: 'Search Failed',
-        description: 'There was an error finding leads. Please try again.',
+        title: 'Falha na Busca',
+        description: 'Ocorreu um erro ao encontrar leads. Por favor, tente novamente.',
       });
     } finally {
       setIsLoading(false);

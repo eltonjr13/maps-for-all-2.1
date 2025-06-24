@@ -1,35 +1,35 @@
 'use server';
 /**
- * @fileOverview A flow to search for business leads, simulating a Google Maps API call.
+ * @fileOverview Um fluxo para buscar leads de negócios, simulando uma chamada à API do Google Maps.
  *
- * - searchLeads - A function that finds business leads based on search criteria.
- * - SearchLeadsInput - The input type for the searchLeads function.
- * - SearchLeadsOutput - The return type for the searchLeads function.
+ * - searchLeads - Uma função que encontra leads de negócios com base em critérios de busca.
+ * - SearchLeadsInput - O tipo de entrada para a função searchLeads.
+ * - SearchLeadsOutput - O tipo de retorno para a função searchLeads.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const BusinessSchema = z.object({
-  id: z.string().describe('A unique identifier for the business.'),
-  name: z.string().describe('The name of the business.'),
-  address: z.string().describe('The full address of the business.'),
-  category: z.string().describe('The category of the business.'),
-  website: z.string().describe('The business website URL.'),
-  phone: z.string().describe('The business phone number.'),
-  email: z.string().describe('The business email address.'),
-  rating: z.number().min(1).max(5).describe('The business rating, from 1 to 5.'),
-  openingHours: z.string().describe('The business opening hours (e.g., "Open now", "Closed").'),
+  id: z.string().describe('Um identificador único para o negócio.'),
+  name: z.string().describe('O nome do negócio.'),
+  address: z.string().describe('O endereço completo do negócio.'),
+  category: z.string().describe('A categoria do negócio.'),
+  website: z.string().describe('A URL do site do negócio.'),
+  phone: z.string().describe('O número de telefone do negócio.'),
+  email: z.string().describe('O endereço de e-mail do negócio.'),
+  rating: z.number().min(1).max(5).describe('A avaliação do negócio, de 1 a 5.'),
+  openingHours: z.string().describe('O horário de funcionamento do negócio (ex: "Aberto agora", "Fechado").'),
   location: z.object({
-    lat: z.number().describe('The latitude of the business location.'),
-    lng: z.number().describe('The longitude of the business location.'),
+    lat: z.number().describe('A latitude da localização do negócio.'),
+    lng: z.number().describe('A longitude da localização do negócio.'),
   }),
 });
 
 const SearchLeadsInputSchema = z.object({
-  location: z.string().describe('The central location for the search (e.g., "New York, NY").'),
-  niche: z.string().describe('The business niche or category to search for (e.g., "accounting").'),
-  radius: z.number().describe('The search radius in kilometers.'),
+  location: z.string().describe('A localização central para a busca (ex: "São Paulo, SP").'),
+  niche: z.string().describe('O nicho ou categoria de negócio a ser buscado (ex: "contabilidade").'),
+  radius: z.number().describe('O raio de busca em quilômetros.'),
 });
 export type SearchLeadsInput = z.infer<typeof SearchLeadsInputSchema>;
 
@@ -46,18 +46,18 @@ const prompt = ai.definePrompt({
   name: 'searchLeadsPrompt',
   input: {schema: SearchLeadsInputSchema},
   output: {schema: SearchLeadsOutputSchema},
-  prompt: `You are a business directory assistant that functions like the Google Maps Places API.
+  prompt: `Você é um assistente de diretório de negócios que funciona como a API do Google Maps Places.
   
-  Based on the provided location, business niche, and search radius, generate a realistic list of 5 to 10 businesses that match the criteria. 
+  Com base na localização, nicho de negócio e raio de busca fornecidos, gere uma lista realista de 5 a 10 empresas que correspondam aos critérios.
   
-  For each business, provide all the necessary details as specified in the output schema: id, name, address, category, website, phone, email, rating, openingHours, and geographic location (latitude and longitude).
+  Para cada empresa, forneça todos os detalhes necessários conforme especificado no esquema de saída: id, nome, endereço, categoria, site, telefone, e-mail, avaliação, horário de funcionamento e localização geográfica (latitude e longitude).
   
-  Ensure the generated data is realistic and relevant to the search query. The addresses and locations should be plausible for the given search location.
+  Garanta que os dados gerados sejam realistas e relevantes para a consulta de busca. Os endereços e localizações devem ser plausíveis para a localização de busca informada.
 
-  Search Criteria:
-  - Location: {{{location}}}
-  - Niche: {{{niche}}}
-  - Radius: {{{radius}}} km
+  Critérios de Busca:
+  - Localização: {{{location}}}
+  - Nicho: {{{niche}}}
+  - Raio: {{{radius}}} km
   `,
 });
 

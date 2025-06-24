@@ -76,12 +76,12 @@ export function ResultsPanel({ businesses, isLoading, hasSearched }: ResultsPane
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-headline text-foreground">
-          {isLoading ? 'Searching...' : `Found ${businesses.length} Leads`}
+          {isLoading ? 'Buscando...' : `${businesses.length} Leads Encontrados`}
         </h2>
         {businesses.length > 0 && (
           <Button variant="outline" size="sm" onClick={handleExport}>
             <Download className="mr-2 h-4 w-4" />
-            Export CSV
+            Exportar CSV
           </Button>
         )}
       </div>
@@ -91,9 +91,9 @@ export function ResultsPanel({ businesses, isLoading, hasSearched }: ResultsPane
         {!isLoading && hasSearched && businesses.length === 0 && (
             <Card className="text-center p-8">
                 <Building2 className="mx-auto h-12 w-12 text-muted-foreground" />
-                <h3 className="mt-4 text-lg font-medium font-headline">No Businesses Found</h3>
+                <h3 className="mt-4 text-lg font-medium font-headline">Nenhuma Empresa Encontrada</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                    Try adjusting your search criteria.
+                    Tente ajustar seus critérios de busca.
                 </p>
             </Card>
         )}

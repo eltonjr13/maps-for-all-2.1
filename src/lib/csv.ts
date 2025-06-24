@@ -8,7 +8,7 @@ export function downloadCsv(data: Business[], filename: string = 'leads.csv') {
     return;
   }
 
-  // Explicitly define headers to control order and inclusion
+  // Define headers for object keys
   const headers = [
     'name', 
     'category', 
@@ -20,7 +20,19 @@ export function downloadCsv(data: Business[], filename: string = 'leads.csv') {
     'openingHours'
   ];
   
-  const headerRow = headers.map(h => `"${h}"`).join(',');
+  // Define translated headers for the CSV file
+  const translatedHeaders = [
+    'nome',
+    'categoria',
+    'endereco',
+    'telefone',
+    'email',
+    'website',
+    'avaliacao',
+    'horario_funcionamento'
+  ];
+
+  const headerRow = translatedHeaders.map(h => `"${h}"`).join(',');
 
   const csvRows = data.map(row => {
     return headers.map(header => {

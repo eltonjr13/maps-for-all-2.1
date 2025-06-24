@@ -1,26 +1,24 @@
-// This file is machine-generated - edit at your own risk!
-
 'use server';
 
 /**
- * @fileOverview Extracts contact information (phone number, email) from a company's website using AI.
+ * @fileOverview Extrai informações de contato (telefone, e-mail) do site de uma empresa usando IA.
  *
- * - extractContactInfo - A function that handles the contact info extraction process.
- * - ExtractContactInfoInput - The input type for the extractContactInfo function.
- * - ExtractContactInfoOutput - The return type for the extractContactInfo function.
+ * - extractContactInfo - Uma função que lida com o processo de extração de informações de contato.
+ * - ExtractContactInfoInput - O tipo de entrada para a função extractContactInfo.
+ * - ExtractContactInfoOutput - O tipo de retorno para a função extractContactInfo.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const ExtractContactInfoInputSchema = z.object({
-  websiteUrl: z.string().url().describe('The URL of the company website.'),
+  websiteUrl: z.string().describe('A URL do site da empresa.'),
 });
 export type ExtractContactInfoInput = z.infer<typeof ExtractContactInfoInputSchema>;
 
 const ExtractContactInfoOutputSchema = z.object({
-  phoneNumbers: z.array(z.string()).describe('An array of phone numbers found on the website.'),
-  emailAddresses: z.array(z.string()).describe('An array of email addresses found on the website.'),
+  phoneNumbers: z.array(z.string()).describe('Um array de números de telefone encontrados no site.'),
+  emailAddresses: z.array(z.string()).describe('Um array de endereços de e-mail encontrados no site.'),
 });
 export type ExtractContactInfoOutput = z.infer<typeof ExtractContactInfoOutputSchema>;
 
@@ -32,13 +30,13 @@ const prompt = ai.definePrompt({
   name: 'extractContactInfoPrompt',
   input: {schema: ExtractContactInfoInputSchema},
   output: {schema: ExtractContactInfoOutputSchema},
-  prompt: `You are an AI assistant tasked with extracting contact information from a company website.
+  prompt: `Você é um assistente de IA encarregado de extrair informações de contato de um site de empresa.
 
-  Given the URL of a company website, extract all phone numbers and email addresses present on the site.
-  Return the phone numbers and email addresses as arrays.
+  Dada a URL de um site de empresa, extraia todos os números de telefone e endereços de e-mail presentes no site.
+  Retorne os números de telefone e endereços de e-mail como arrays.
 
-  Website URL: {{{websiteUrl}}}
-  `, // Ensure triple braces for websiteUrl to prevent HTML escaping
+  URL do Site: {{{websiteUrl}}}
+  `,
 });
 
 const extractContactInfoFlow = ai.defineFlow(

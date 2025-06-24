@@ -53,7 +53,7 @@ export function MapPanel({ locations }: MapPanelProps) {
         })}
         {locations.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center">
-                <p className="text-muted-foreground font-headline text-lg">Search for leads to see them on the map</p>
+                <p className="text-muted-foreground font-headline text-lg">Busque por leads para vê-los no mapa</p>
             </div>
         )}
       </div>

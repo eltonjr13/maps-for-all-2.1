@@ -1,19 +1,19 @@
 'use server';
 
 /**
- * @fileOverview This file defines a Genkit flow to generate a short, compelling business description for a given lead.
+ * @fileOverview Este arquivo define um fluxo Genkit para gerar uma descrição de negócio curta e atraente para um determinado lead.
  *
- * - generateBusinessDescription - A function that generates a business description.
- * - GenerateBusinessDescriptionInput - The input type for the generateBusinessDescription function.
- * - GenerateBusinessDescriptionOutput - The return type for the generateBusinessDescription function.
+ * - generateBusinessDescription - Uma função que gera uma descrição de negócio.
+ * - GenerateBusinessDescriptionInput - O tipo de entrada para a função generateBusinessDescription.
+ * - GenerateBusinessDescriptionOutput - O tipo de retorno para a função generateBusinessDescription.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateBusinessDescriptionInputSchema = z.object({
-  category: z.string().describe('The category of the business.'),
-  location: z.string().describe('The location of the business.'),
+  category: z.string().describe('A categoria do negócio.'),
+  location: z.string().describe('A localização do negócio.'),
 });
 export type GenerateBusinessDescriptionInput = z.infer<
   typeof GenerateBusinessDescriptionInputSchema
@@ -22,7 +22,7 @@ export type GenerateBusinessDescriptionInput = z.infer<
 const GenerateBusinessDescriptionOutputSchema = z.object({
   description: z
     .string()
-    .describe('A short, compelling description of the business.'),
+    .describe('Uma descrição curta e atraente do negócio.'),
 });
 export type GenerateBusinessDescriptionOutput = z.infer<
   typeof GenerateBusinessDescriptionOutputSchema
@@ -38,14 +38,14 @@ const prompt = ai.definePrompt({
   name: 'generateBusinessDescriptionPrompt',
   input: {schema: GenerateBusinessDescriptionInputSchema},
   output: {schema: GenerateBusinessDescriptionOutputSchema},
-  prompt: `You are an expert marketing copywriter specializing in generating concise and engaging business descriptions.
+  prompt: `Você é um redator de marketing especialista em gerar descrições de negócios concisas e envolventes.
 
-  Based on the category and location of a business, generate a short, compelling description that captures the essence of its offerings.
+  Com base na categoria e localização de um negócio, gere uma descrição curta e atraente que capture a essência de suas ofertas.
 
-  Category: {{{category}}}
-  Location: {{{location}}}
+  Categoria: {{{category}}}
+  Localização: {{{location}}}
 
-  Description:`,
+  Descrição:`,
 });
 
 const generateBusinessDescriptionFlow = ai.defineFlow(
