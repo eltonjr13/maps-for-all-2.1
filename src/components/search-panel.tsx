@@ -16,7 +16,7 @@ interface SearchPanelProps {
 
 export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
   const [location, setLocation] = useState('São Paulo, SP');
-  const [niche, setNiche] = useState('all');
+  const [niche, setNiche] = useState('clinica-medica');
   const [radius, setRadius] = useState([5]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -31,7 +31,7 @@ export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
           <Filter className="w-6 h-6 text-primary" />
           Encontre seu Próximo Lead
         </CardTitle>
-        <CardDescription>Insira um local e um nicho para iniciar a prospecção.</CardDescription>
+        <CardDescription>Insira um local e um tipo de clínica para iniciar a prospecção.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -50,17 +50,18 @@ export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="niche">Nicho de Negócio</Label>
+            <Label htmlFor="niche">Tipo de Clínica</Label>
             <Select value={niche} onValueChange={setNiche}>
               <SelectTrigger id="niche">
-                <SelectValue placeholder="Selecione um nicho" />
+                <SelectValue placeholder="Selecione um tipo de clínica" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todos os Nichos</SelectItem>
-                <SelectItem value="accounting">Contabilidade</SelectItem>
-                <SelectItem value="medical clinic">Clínicas Médicas</SelectItem>
-                <SelectItem value="industry">Indústrias</SelectItem>
-                <SelectItem value="corporate restaurant">Restaurantes Corporativos</SelectItem>
+                <SelectItem value="clinica-medica">Clínica Médica</SelectItem>
+                <SelectItem value="clinica-odontologica">Clínica Odontológica</SelectItem>
+                <SelectItem value="clinica-de-fisioterapia">Clínica de Fisioterapia</SelectItem>
+                <SelectItem value="clinica-de-estetica">Clínica de Estética</SelectItem>
+                <SelectItem value="clinica-de-psicologia">Clínica de Psicologia</SelectItem>
+                <SelectItem value="clinica-de-dermatologia">Clínica de Dermatologia</SelectItem>
               </SelectContent>
             </Select>
           </div>
