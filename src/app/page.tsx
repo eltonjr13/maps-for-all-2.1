@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import type { Business } from '@/types';
-import { AppHeader } from '@/components/app-header';
 import { SearchPanel } from '@/components/search-panel';
 import { ResultsPanel } from '@/components/results-panel';
 import { MapPanel } from '@/components/map-panel';
@@ -35,18 +34,15 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <AppHeader />
-      <div className="flex-1 w-full max-w-[90rem] mx-auto p-4 md:p-6 lg:p-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-8 h-full">
-          <section className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
-            <SearchPanel onSearch={handleSearch} isLoading={isLoading} />
-            <ResultsPanel businesses={results} isLoading={isLoading} hasSearched={hasSearched} />
-          </section>
-          <aside className="hidden lg:block lg:col-span-7 xl:col-span-8">
-            <MapPanel locations={results.map(b => b.location)} />
-          </aside>
-        </div>
+    <div className="w-full max-w-[90rem] mx-auto p-4 md:p-6 lg:p-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-8 h-full">
+        <section className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
+          <SearchPanel onSearch={handleSearch} isLoading={isLoading} />
+          <ResultsPanel businesses={results} isLoading={isLoading} hasSearched={hasSearched} />
+        </section>
+        <aside className="hidden lg:block lg:col-span-7 xl:col-span-8">
+          <MapPanel locations={results.map(b => b.location)} />
+        </aside>
       </div>
     </div>
   );

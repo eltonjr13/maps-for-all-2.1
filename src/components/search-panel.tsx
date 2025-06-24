@@ -27,7 +27,7 @@ export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle className="font-headline text-2xl flex items-center gap-2">
+        <CardTitle className="font-headline text-2xl flex items-center gap-2 font-semibold">
           <Filter className="w-6 h-6 text-primary" />
           Encontre seu Próximo Lead
         </CardTitle>
@@ -41,6 +41,7 @@ export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input 
                 id="location" 
+                aria-label="Localização"
                 placeholder="Cidade, endereço ou coordenadas" 
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
@@ -52,7 +53,7 @@ export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
           <div className="space-y-2">
             <Label htmlFor="niche">Tipo de Clínica</Label>
             <Select value={niche} onValueChange={setNiche}>
-              <SelectTrigger id="niche">
+              <SelectTrigger id="niche" aria-label="Tipo de Clínica">
                 <SelectValue placeholder="Selecione um tipo de clínica" />
               </SelectTrigger>
               <SelectContent>
@@ -70,6 +71,7 @@ export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
             <Label htmlFor="radius">Raio de Busca: {radius[0]} km</Label>
             <Slider 
               id="radius"
+              aria-label="Raio de Busca"
               min={1} 
               max={50} 
               step={1} 
@@ -78,7 +80,7 @@ export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
             />
           </div>
 
-          <Button type="submit" className="w-full font-headline" disabled={isLoading}>
+          <Button type="submit" className="w-full font-headline font-semibold" disabled={isLoading} aria-label="Buscar leads">
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

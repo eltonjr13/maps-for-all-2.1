@@ -28,10 +28,10 @@ export function MapPanel({ locations }: MapPanelProps) {
   return (
     <div className="h-[calc(100vh-10rem)] sticky top-24">
       <div 
-        className="w-full h-full bg-muted/50 rounded-lg border shadow-lg overflow-hidden relative"
+        className="w-full h-full bg-card rounded-lg border shadow-lg overflow-hidden relative"
         data-ai-hint="map city"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-100/50 to-cyan-100/50 dark:from-blue-900/20 dark:to-cyan-900/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900/50 to-black/50" />
         {locations.map((loc, index) => {
             const top = 100 - scale(loc.lat, minLat, maxLat);
             const left = scale(loc.lng, minLng, maxLng);
@@ -45,8 +45,8 @@ export function MapPanel({ locations }: MapPanelProps) {
                     className="absolute w-4 h-4 -translate-x-1/2 -translate-y-1/2"
                     style={{ top: `${top}%`, left: `${left}%` }}
                 >
-                    <div className="w-full h-full rounded-full bg-accent/80 backdrop-blur-sm ring-4 ring-background/50 shadow-xl flex items-center justify-center">
-                        <div className="w-2 h-2 rounded-full bg-accent-foreground" />
+                    <div className="w-full h-full rounded-full bg-primary/80 backdrop-blur-sm ring-4 ring-background/50 shadow-xl flex items-center justify-center">
+                        <div className="w-2 h-2 rounded-full bg-primary-foreground" />
                     </div>
                 </motion.div>
             )

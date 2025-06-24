@@ -18,7 +18,7 @@ const InfoLine = ({ icon: Icon, text }: { icon: React.ElementType, text: string 
   if (!text) return null;
   return (
     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-      <Icon className="w-4 h-4 text-accent" />
+      <Icon className="w-4 h-4 text-primary" />
       <span>{text}</span>
     </div>
   );
@@ -48,7 +48,7 @@ const BusinessCard = ({ business }: { business: Business }) => {
   const hasWhatsApp = whatsAppNumber.length >= 10;
 
   return (
-    <Card className="hover:shadow-md transition-shadow duration-300">
+    <Card className="hover:border-primary transition-all duration-300">
       <CardHeader>
         <CardTitle className="font-headline text-lg text-foreground">{business.name}</CardTitle>
       </CardHeader>
@@ -65,7 +65,7 @@ const BusinessCard = ({ business }: { business: Business }) => {
         </div>
         {hasWhatsApp && (
           <div className="pt-2">
-            <Button asChild variant="outline" className="w-full">
+            <Button asChild className="w-full" aria-label={`Chamar ${business.name} no WhatsApp`}>
               <a href={`https://wa.me/${whatsAppNumber}`} target="_blank" rel="noopener noreferrer">
                 <WhatsAppIcon className="mr-2 h-5 w-5" />
                 Chamar no WhatsApp
@@ -109,11 +109,11 @@ export function ResultsPanel({ businesses, isLoading, hasSearched }: ResultsPane
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-headline text-foreground">
+        <h2 className="text-xl font-headline font-semibold text-foreground">
           {isLoading ? 'Buscando...' : `${businesses.length} Leads Encontrados`}
         </h2>
         {businesses.length > 0 && (
-          <Button variant="outline" size="sm" onClick={handleExport}>
+          <Button variant="outline" size="sm" onClick={handleExport} aria-label="Exportar resultados para CSV">
             <Download className="mr-2 h-4 w-4" />
             Exportar CSV
           </Button>
@@ -123,7 +123,7 @@ export function ResultsPanel({ businesses, isLoading, hasSearched }: ResultsPane
       <div className="flex-1 space-y-4 overflow-y-auto pr-2 -mr-2">
         {isLoading && <LoadingSkeleton />}
         {!isLoading && hasSearched && businesses.length === 0 && (
-            <Card className="text-center p-8">
+            <Card className="text-center p-8 bg-card border-border">
                 <Building2 className="mx-auto h-12 w-12 text-muted-foreground" />
                 <h3 className="mt-4 text-lg font-medium font-headline">Nenhuma Empresa Encontrada</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
