@@ -13,13 +13,15 @@ import {z} from 'genkit';
 const BusinessSchema = z.object({
   id: z.string().describe('Um identificador único para o negócio.'),
   name: z.string().describe('O nome do negócio.'),
-  address: z.string().describe('O endereço completo do negócio.'),
-  category: z.string().describe('A categoria do negócio.'),
-  website: z.string().describe('A URL do site do negócio.'),
-  phone: z.string().describe('O número de telefone do negócio.'),
-  email: z.string().describe('O endereço de e-mail do negócio.'),
-  rating: z.number().min(1).max(5).describe('A avaliação do negócio, de 1 a 5.'),
-  openingHours: z.string().describe('O horário de funcionamento do negócio (ex: "Aberto agora", "Fechado").'),
+  address: z.string().describe('O endereço completo do negócio (formatted_address).'),
+  category: z.string().describe('A categoria do negócio (types).'),
+  website: z.string().url().describe('A URL do site do negócio.').optional(),
+  phone: z.string().describe('O número de telefone formatado do negócio (formatted_phone_number).').optional(),
+  internationalPhone: z.string().describe('O número de telefone internacional no formato E.164 (ex: 5511912345678).').optional(),
+  whatsappLink: z.string().url().describe('O link do WhatsApp no formato https://wa.me/TELEFONE_E164. Deve ser gerado a partir do internationalPhone, se ele existir.').optional(),
+  email: z.string().email().describe('O endereço de e-mail do negócio.').optional(),
+  rating: z.number().min(1).max(5).describe('A avaliação do negócio, de 1 a 5.').optional(),
+  openingHours: z.string().describe('O horário de funcionamento do negócio (ex: "Aberto agora", "Fechado").').optional(),
   location: z.object({
     lat: z.number().describe('A latitude da localização do negócio.'),
     lng: z.number().describe('A longitude da localização do negócio.'),
@@ -50,9 +52,11 @@ const prompt = ai.definePrompt({
   
   Com base na localização, nicho de negócio e raio de busca fornecidos, gere uma lista realista de 5 a 10 empresas que correspondam aos critérios.
   
-  Para cada empresa, forneça todos os detalhes necessários conforme especificado no esquema de saída: id, nome, endereço, categoria, site, telefone, e-mail, avaliação, horário de funcionamento e localização geográfica (latitude e longitude).
+  Para cada empresa, forneça todos os detalhes necessários conforme especificado no esquema de saída: id, nome, endereço, categoria, site, telefone formatado (phone), telefone internacional E.164 (internationalPhone), e-mail, avaliação, horário de funcionamento e localização.
   
-  Garanta que os dados gerados sejam realistas e relevantes para a consulta de busca. Os endereços e localizações devem ser plausíveis para a localização de busca informada.
+  Se um 'internationalPhone' for gerado, crie também um 'whatsappLink' correspondente no formato 'https://wa.me/NUMERO_E164' (onde NUMERO_E164 é o internationalPhone sem símbolos como '+').
+  
+  Garanta que os dados gerados sejam realistas e relevantes para a consulta de busca. Os endereços e localizações devem ser plausíveis para a localização de busca informada. Nem todas as empresas terão todos os campos preenchidos.
 
   Critérios de Busca:
   - Localização: {{{location}}}

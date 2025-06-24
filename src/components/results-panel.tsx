@@ -14,12 +14,23 @@ interface ResultsPanelProps {
   hasSearched: boolean;
 }
 
-const InfoLine = ({ icon: Icon, text }: { icon: React.ElementType, text: string | number | undefined }) => {
+const InfoLine = ({ icon: Icon, text, href }: { icon: React.ElementType, text?: string | number, href?: string }) => {
   if (!text) return null;
+
+  const linkHref = href || (typeof text === 'string' && (text.startsWith('http') || text.startsWith('www')) ? (text.startsWith('www') ? `https://${text}` : text) : undefined);
+
   return (
     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-      <Icon className="w-4 h-4 text-primary" />
-      <span>{text}</span>
+      <Icon className="w-4 h-4 text-primary flex-shrink-0" />
+      <div className="truncate">
+        {linkHref ? (
+          <a href={linkHref} target="_blank" rel="noopener noreferrer" className="hover:underline text-foreground">
+            {String(text)}
+          </a>
+        ) : (
+          <span>{text}</span>
+        )}
+      </div>
     </div>
   );
 };
@@ -37,15 +48,8 @@ const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
-const sanitizePhoneNumber = (phone: string) => {
-  if (!phone) return '';
-  return phone.replace(/\D/g, '');
-};
-
-
 const BusinessCard = ({ business }: { business: Business }) => {
-  const whatsAppNumber = sanitizePhoneNumber(business.phone);
-  const hasWhatsApp = whatsAppNumber.length >= 10;
+  const hasWhatsApp = !!business.whatsappLink;
 
   return (
     <Card className="bg-black/[.85] border-white/15 backdrop-blur-[10px] hover:border-primary hover:backdrop-blur-[12px] transition-all duration-300">
@@ -59,14 +63,14 @@ const BusinessCard = ({ business }: { business: Business }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <InfoLine icon={Globe} text={business.website} />
           <InfoLine icon={Phone} text={business.phone} />
-          <InfoLine icon={Mail} text={business.email} />
-          <InfoLine icon={Star} text={`${business.rating} / 5`} />
+          <InfoLine icon={Mail} text={business.email} href={business.email ? `mailto:${business.email}` : undefined} />
+          <InfoLine icon={Star} text={business.rating ? `${business.rating} / 5` : undefined} />
           <InfoLine icon={Clock} text={business.openingHours} />
         </div>
         {hasWhatsApp && (
           <div className="pt-2">
             <Button asChild className="w-full" aria-label={`Chamar ${business.name} no WhatsApp`}>
-              <a href={`https://wa.me/${whatsAppNumber}`} target="_blank" rel="noopener noreferrer">
+              <a href={business.whatsappLink} target="_blank" rel="noopener noreferrer">
                 <WhatsAppIcon className="mr-2 h-5 w-5" />
                 Chamar no WhatsApp
               </a>
