@@ -2,7 +2,6 @@ import type {Metadata} from 'next';
 import { Toaster } from "@/components/ui/toaster"
 import './globals.css';
 import { AppHeader } from '@/components/app-header';
-import { AppFooter } from '@/components/app-footer';
 
 export const metadata: Metadata = {
   title: 'Buscador de Leads',
@@ -27,7 +26,6 @@ export default function RootLayout({
           <main className="flex-1">
             {children}
           </main>
-          <AppFooter />
         </div>
         <Toaster />
       </body>
