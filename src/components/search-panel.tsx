@@ -25,7 +25,7 @@ export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
   };
 
   return (
-    <Card className="bg-black/60 border-white/15 backdrop-blur-[10px] hover:border-primary hover:backdrop-blur-[12px] transition-all duration-300">
+    <Card className="bg-black/[.85] border-white/15 backdrop-blur-[10px] hover:border-primary hover:backdrop-blur-[12px] transition-all duration-300">
       <CardHeader>
         <CardTitle className="font-headline text-2xl flex items-center gap-2 font-semibold">
           <Filter className="w-6 h-6 text-primary" />
