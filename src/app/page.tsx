@@ -1,12 +1,22 @@
 "use client";
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import type { Business } from '@/types';
 import { SearchPanel } from '@/components/search-panel';
 import { ResultsPanel } from '@/components/results-panel';
-import { MapPanel } from '@/components/map-panel';
 import { searchLeads } from '@/ai/flows/search-leads-flow';
 import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const MapPanel = dynamic(() => import('@/components/map-panel').then(mod => mod.MapPanel), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[calc(100vh-10rem)] sticky top-24">
+      <Skeleton className="w-full h-full bg-card rounded-lg border shadow-lg" />
+    </div>
+  ),
+});
 
 export default function Home() {
   const [results, setResults] = useState<Business[]>([]);
