@@ -34,6 +34,10 @@ Suas chaves de API e outras informações sensíveis do arquivo `.env` **não de
     -   **Value:** `sua_chave_secreta_aqui`
 4.  Clique em **"Save"**. Repita o processo para todas as variáveis necessárias.
 
+**Variáveis de Ambiente Necessárias:**
+-   `GOOGLE_API_KEY`: Sua chave de API do Google Cloud para Genkit (Gemini).
+-   `GOOGLE_MAPS_API_KEY`: Sua chave de API do Google Cloud com a **Places API** ativada. **É crucial que a API Places esteja habilitada para esta chave.**
+
 Essas variáveis serão injetadas de forma segura durante o processo de build e estarão disponíveis para suas funções de backend (Genkit flows).
 
 ## Passo 4: Realizar o Deploy
