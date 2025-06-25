@@ -22,12 +22,19 @@ const LightningBackground: FC<LightningBackgroundProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { isAnimating } = useBackground();
+  
+  const stateRef = useRef({ isAnimating, hue, xOffset, speed, intensity, size });
+  useEffect(() => {
+    stateRef.current = { isAnimating, hue, xOffset, speed, intensity, size };
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     let animationFrameId: number;
+    let animationTime = 0;
+    let lastTimestamp = 0;
 
     const resizeCanvas = () => {
       canvas.width = canvas.clientWidth;
@@ -180,26 +187,35 @@ const LightningBackground: FC<LightningBackgroundProps> = ({
     const uIntensityLocation = gl.getUniformLocation(program, "uIntensity");
     const uSizeLocation = gl.getUniformLocation(program, "uSize");
 
-    const startTime = performance.now();
-    const render = () => {
+    const render = (timestamp: number) => {
+      if (lastTimestamp === 0) {
+        lastTimestamp = timestamp;
+      }
+      const deltaTime = (timestamp - lastTimestamp) / 1000.0;
+      lastTimestamp = timestamp;
+
+      if (stateRef.current.isAnimating) {
+        animationTime += deltaTime;
+      }
+
       resizeCanvas();
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(iResolutionLocation, canvas.width, canvas.height);
-      const currentTime = performance.now();
-      gl.uniform1f(iTimeLocation, (currentTime - startTime) / 1000.0);
-      gl.uniform1f(uHueLocation, hue);
-      gl.uniform1f(uXOffsetLocation, xOffset);
-      const currentSpeed = isAnimating ? speed : 0;
-      gl.uniform1f(uSpeedLocation, currentSpeed);
-      gl.uniform1f(uIntensityLocation, intensity);
-      gl.uniform1f(uSizeLocation, size);
+      
+      gl.uniform1f(iTimeLocation, animationTime);
+      gl.uniform1f(uHueLocation, stateRef.current.hue);
+      gl.uniform1f(uXOffsetLocation, stateRef.current.xOffset);
+      gl.uniform1f(uSpeedLocation, stateRef.current.speed);
+      gl.uniform1f(uIntensityLocation, stateRef.current.intensity);
+      gl.uniform1f(uSizeLocation, stateRef.current.size);
+      
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       animationFrameId = requestAnimationFrame(render);
     };
 
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
-    render();
+    animationFrameId = requestAnimationFrame(render);
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);
@@ -207,7 +223,7 @@ const LightningBackground: FC<LightningBackgroundProps> = ({
         cancelAnimationFrame(animationFrameId);
       }
     };
-  }, [hue, xOffset, speed, intensity, size, isAnimating]);
+  }, []);
 
   return <canvas ref={canvasRef} className="lightning-container" />;
 };
