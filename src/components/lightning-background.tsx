@@ -3,6 +3,7 @@
 import { useRef, useEffect } from "react";
 import type { FC } from "react";
 import "./lightning-background.css";
+import { useBackground } from "./background-provider";
 
 interface LightningBackgroundProps {
   hue?: number;
@@ -20,6 +21,7 @@ const LightningBackground: FC<LightningBackgroundProps> = ({
   size = 1,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { isAnimating } = useBackground();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -187,7 +189,8 @@ const LightningBackground: FC<LightningBackgroundProps> = ({
       gl.uniform1f(iTimeLocation, (currentTime - startTime) / 1000.0);
       gl.uniform1f(uHueLocation, hue);
       gl.uniform1f(uXOffsetLocation, xOffset);
-      gl.uniform1f(uSpeedLocation, speed);
+      const currentSpeed = isAnimating ? speed : 0;
+      gl.uniform1f(uSpeedLocation, currentSpeed);
       gl.uniform1f(uIntensityLocation, intensity);
       gl.uniform1f(uSizeLocation, size);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -204,7 +207,7 @@ const LightningBackground: FC<LightningBackgroundProps> = ({
         cancelAnimationFrame(animationFrameId);
       }
     };
-  }, [hue, xOffset, speed, intensity, size]);
+  }, [hue, xOffset, speed, intensity, size, isAnimating]);
 
   return <canvas ref={canvasRef} className="lightning-container" />;
 };

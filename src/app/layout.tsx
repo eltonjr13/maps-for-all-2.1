@@ -5,6 +5,7 @@ import './globals.css';
 import { AppHeader } from '@/components/app-header';
 import LightningBackground from '@/components/lightning-background';
 import '@/components/lightning-background.css';
+import { BackgroundProvider } from '@/components/background-provider';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -27,14 +28,16 @@ export default function RootLayout({
     <html lang="pt-br" className={poppins.variable} suppressHydrationWarning>
       <head />
       <body className="font-body antialiased" suppressHydrationWarning>
-        <LightningBackground hue={55} xOffset={0} speed={0.7} intensity={0.8} size={2.1} />
-        <div className="relative z-10 flex flex-col min-h-screen">
-          <AppHeader />
-          <main className="flex-1">
-            {children}
-          </main>
-        </div>
-        <Toaster />
+        <BackgroundProvider>
+          <LightningBackground hue={55} xOffset={0} speed={0.7} intensity={0.8} size={2.1} />
+          <div className="relative z-10 flex flex-col min-h-screen">
+            <AppHeader />
+            <main className="flex-1">
+              {children}
+            </main>
+          </div>
+          <Toaster />
+        </BackgroundProvider>
       </body>
     </html>
   );
