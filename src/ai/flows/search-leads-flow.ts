@@ -15,13 +15,13 @@ const BusinessSchema = z.object({
   name: z.string().describe('O nome do negócio.'),
   address: z.string().describe('O endereço completo do negócio (formatted_address).'),
   category: z.string().describe('A categoria do negócio (types).'),
-  website: z.string().describe('A URL do site do negócio.').optional(),
-  phone: z.string().describe('O número de telefone formatado do negócio (formatted_phone_number).').optional(),
-  internationalPhone: z.string().describe('O número de telefone internacional no formato E.164 (ex: 5511912345678).').optional(),
-  whatsappLink: z.string().describe('O link do WhatsApp no formato https://wa.me/TELEFONE_E164. Deve ser gerado a partir do internationalPhone, se ele existir.').optional(),
-  email: z.string().describe('O endereço de e-mail do negócio.').optional(),
-  rating: z.number().min(1).max(5).describe('A avaliação do negócio, de 1 a 5.').optional(),
-  openingHours: z.string().describe('O horário de funcionamento do negócio (ex: "Aberto agora", "Fechado").').optional(),
+  website: z.string().optional().describe('A URL do site do negócio.'),
+  phone: z.string().optional().describe('O número de telefone formatado do negócio (formatted_phone_number).'),
+  internationalPhone: z.string().optional().describe('O número de telefone internacional no formato E.164 (ex: 5511912345678).'),
+  whatsappLink: z.string().optional().describe('O link do WhatsApp no formato https://wa.me/TELEFONE_E164. Deve ser gerado a partir do internationalPhone, se ele existir.'),
+  email: z.string().optional().describe('O endereço de e-mail do negócio.'),
+  rating: z.number().min(1).max(5).optional().describe('A avaliação do negócio, de 1 a 5.'),
+  openingHours: z.string().optional().describe('O horário de funcionamento do negócio (ex: "Aberto agora", "Fechado").'),
   location: z.object({
     lat: z.number().describe('A latitude da localização do negócio.'),
     lng: z.number().describe('A longitude da localização do negócio.'),
@@ -41,7 +41,15 @@ const SearchLeadsOutputSchema = z.object({
 export type SearchLeadsOutput = z.infer<typeof SearchLeadsOutputSchema>;
 
 export async function searchLeads(input: SearchLeadsInput): Promise<SearchLeadsOutput> {
-  return searchLeadsFlow(input);
+  console.log('Iniciando a função searchLeads com a entrada:', JSON.stringify(input));
+  try {
+    const result = await searchLeadsFlow(input);
+    console.log('Função searchLeads concluída com sucesso.');
+    return result;
+  } catch (error) {
+    console.error('Erro detalhado na execução de searchLeads:', error);
+    throw error; // Re-throw the error after logging
+  }
 }
 
 const prompt = ai.definePrompt({
@@ -72,7 +80,13 @@ const searchLeadsFlow = ai.defineFlow(
     outputSchema: SearchLeadsOutputSchema,
   },
   async input => {
+    console.log('Dentro do searchLeadsFlow. Chamando o prompt de IA...');
     const {output} = await prompt(input);
-    return output!;
+    console.log(`Prompt de IA retornou. ${output?.businesses?.length || 0} empresas encontradas.`);
+    if (!output) {
+      console.error('A saída do prompt de IA foi nula ou indefinida.');
+      throw new Error('A resposta da IA estava vazia.');
+    }
+    return output;
   }
 );
