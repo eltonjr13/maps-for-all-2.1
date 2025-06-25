@@ -10,18 +10,11 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const BusinessSchema = z.object({
-  id: z.string().describe('Um identificador único para o negócio.'),
+const BasicBusinessSchema = z.object({
+  id: z.string().describe('Um identificador único para o negócio (place_id).'),
   name: z.string().describe('O nome do negócio.'),
   address: z.string().describe('O endereço completo do negócio (formatted_address).'),
   category: z.string().describe('A categoria do negócio (types).'),
-  website: z.string().optional().describe('A URL do site do negócio.'),
-  phone: z.string().optional().describe('O número de telefone formatado do negócio (formatted_phone_number).'),
-  internationalPhone: z.string().optional().describe('O número de telefone internacional no formato E.164 (ex: 5511912345678).'),
-  whatsappLink: z.string().optional().describe('O link do WhatsApp no formato https://wa.me/TELEFONE_E164. Deve ser gerado a partir do internationalPhone, se ele existir.'),
-  email: z.string().optional().describe('O endereço de e-mail do negócio.'),
-  rating: z.number().min(1).max(5).optional().describe('A avaliação do negócio, de 1 a 5.'),
-  openingHours: z.string().optional().describe('O horário de funcionamento do negócio (ex: "Aberto agora", "Fechado").'),
   location: z.object({
     lat: z.number().describe('A latitude da localização do negócio.'),
     lng: z.number().describe('A longitude da localização do negócio.'),
@@ -36,7 +29,7 @@ const SearchLeadsInputSchema = z.object({
 export type SearchLeadsInput = z.infer<typeof SearchLeadsInputSchema>;
 
 const SearchLeadsOutputSchema = z.object({
-  businesses: z.array(BusinessSchema),
+  businesses: z.array(BasicBusinessSchema),
 });
 export type SearchLeadsOutput = z.infer<typeof SearchLeadsOutputSchema>;
 
@@ -56,15 +49,14 @@ const prompt = ai.definePrompt({
   name: 'searchLeadsPrompt',
   input: {schema: SearchLeadsInputSchema},
   output: {schema: SearchLeadsOutputSchema},
-  prompt: `Você é um assistente de diretório de negócios que funciona como a API do Google Maps Places.
+  prompt: `Você é um assistente de diretório de negócios que funciona como a API do Google Maps Places (nearbySearch).
   
   Com base na localização, nicho de negócio e raio de busca fornecidos, gere uma lista realista de 10 a 16 empresas que correspondam aos critérios.
   
-  Para cada empresa, forneça todos os detalhes necessários conforme especificado no esquema de saída: id, nome, endereço, categoria, site, telefone formatado (phone), telefone internacional E.164 (internationalPhone), e-mail, avaliação, horário de funcionamento e localização.
-  
-  Se um 'internationalPhone' for gerado, crie também um 'whatsappLink' correspondente no formato 'https://wa.me/NUMERO_E164' (onde NUMERO_E164 é o internationalPhone sem símbolos como '+').
-  
-  Garanta que os dados gerados sejam realistas e relevantes para a consulta de busca. Os endereços e localizações devem ser plausíveis para a localização de busca informada. Nem todas as empresas terão todos os campos preenchidos.
+  Para cada empresa, forneça APENAS os seguintes detalhes básicos: id (um place_id único), nome, endereço (formatted_address), categoria (types) e localização (latitude e longitude).
+  Não inclua nenhuma outra informação como telefone, site, avaliação, etc.
+
+  Garanta que os dados gerados sejam realistas e relevantes para a consulta de busca. Os endereços e localizações devem ser plausíveis para a localização de busca informada.
 
   Critérios de Busca:
   - Localização: {{{location}}}

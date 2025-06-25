@@ -13,6 +13,8 @@ interface ResultsPanelProps {
   businesses: Business[];
   isLoading: boolean;
   hasSearched: boolean;
+  onFetchDetails: (businessId: string) => void;
+  loadingDetails: string[];
 }
 
 const InfoLine = ({ icon: Icon, text, href }: { icon: React.ElementType, text?: string | number, href?: string }) => {
@@ -57,8 +59,8 @@ const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
-const BusinessCardAccordion = ({ business }: { business: Business }) => {
-  const hasWhatsApp = !!business.whatsappLink;
+const BusinessCardAccordion = ({ business, isLoadingDetails }: { business: Business, isLoadingDetails: boolean }) => {
+  const hasDetails = !!business.phone || !!business.website || !!business.email;
 
   return (
     <AccordionItem value={business.id} className="border-none">
@@ -71,23 +73,38 @@ const BusinessCardAccordion = ({ business }: { business: Business }) => {
             <InfoLine icon={Tag} text={business.category} />
             <InfoLine icon={MapPin} text={business.address} />
             <Separator />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <InfoLine icon={Globe} text={business.website} />
-              <InfoLine icon={Phone} text={business.phone} />
-              <InfoLine icon={Phone} text={business.internationalPhone} />
-              <InfoLine icon={Mail} text={business.email} href={business.email ? `mailto:${business.email}` : undefined} />
-              <InfoLine icon={Star} text={business.rating ? `${business.rating} / 5` : undefined} />
-              <InfoLine icon={Clock} text={business.openingHours} />
-            </div>
-            {hasWhatsApp && (
-              <div className="pt-2">
-                <Button asChild className="w-full" aria-label={`Chamar ${business.name} no WhatsApp`}>
-                  <a href={business.whatsappLink} target="_blank" rel="noopener noreferrer">
-                    <WhatsAppIcon className="mr-2 h-5 w-5" />
-                    Chamar no WhatsApp
-                  </a>
-                </Button>
+            
+            {isLoadingDetails ? (
+              <div className="space-y-3 pt-2">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-4 w-2/3" />
               </div>
+            ) : hasDetails ? (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <InfoLine icon={Globe} text={business.website} />
+                  <InfoLine icon={Phone} text={business.phone} />
+                  <InfoLine icon={Phone} text={business.internationalPhone} />
+                  <InfoLine icon={Mail} text={business.email} href={business.email ? `mailto:${business.email}` : undefined} />
+                  <InfoLine icon={Star} text={business.rating ? `${business.rating} / 5` : undefined} />
+                  <InfoLine icon={Clock} text={business.openingHours} />
+                </div>
+                {business.whatsappLink && (
+                  <div className="pt-2">
+                    <Button asChild className="w-full" aria-label={`Chamar ${business.name} no WhatsApp`}>
+                      <a href={business.whatsappLink} target="_blank" rel="noopener noreferrer">
+                        <WhatsAppIcon className="mr-2 h-5 w-5" />
+                        Chamar no WhatsApp
+                      </a>
+                    </Button>
+                  </div>
+                )}
+              </>
+            ) : (
+                <div className="pt-2 text-center text-muted-foreground">
+                    <p>Nenhum detalhe de contato adicional encontrado.</p>
+                </div>
             )}
           </div>
         </AccordionContent>
@@ -106,9 +123,17 @@ const LoadingSkeleton = () => (
   </div>
 );
 
-export function ResultsPanel({ businesses, isLoading, hasSearched }: ResultsPanelProps) {
+export function ResultsPanel({ businesses, isLoading, hasSearched, onFetchDetails, loadingDetails }: ResultsPanelProps) {
   const handleExport = () => {
     downloadCsv(businesses, `leads-${new Date().toISOString().split('T')[0]}.csv`);
+  };
+
+  const handleAccordionToggle = (businessId: string) => {
+    if (!businessId) return;
+    const business = businesses.find(b => b.id === businessId);
+    if (business && !business.phone && !loadingDetails.includes(businessId)) {
+        onFetchDetails(businessId);
+    }
   };
 
   return (
@@ -137,9 +162,13 @@ export function ResultsPanel({ businesses, isLoading, hasSearched }: ResultsPane
             </Card>
         )}
         {!isLoading && businesses.length > 0 && (
-          <Accordion type="single" collapsible className="space-y-4">
+          <Accordion type="single" collapsible className="space-y-4" onValueChange={handleAccordionToggle}>
             {businesses.map(business => (
-              <BusinessCardAccordion key={business.id} business={business} />
+              <BusinessCardAccordion 
+                key={business.id} 
+                business={business} 
+                isLoadingDetails={loadingDetails.includes(business.id)}
+              />
             ))}
           </Accordion>
         )}
