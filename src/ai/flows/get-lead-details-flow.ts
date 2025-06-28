@@ -48,6 +48,10 @@ const GetLeadDetailsOutputSchema = z.object({
     .describe(
       'O horário de funcionamento do negócio (ex: "Aberto agora", "Fechado").'
     ),
+  googleMapsUrl: z
+    .string()
+    .optional()
+    .describe('A URL do negócio no Google Maps.'),
 });
 export type GetLeadDetailsOutput = z.infer<typeof GetLeadDetailsOutputSchema>;
 
@@ -99,6 +103,7 @@ const getLeadDetailsFlow = ai.defineFlow(
       whatsappLink: whatsappLink,
       rating: details.rating,
       openingHours: openingHoursText,
+      googleMapsUrl: details.url,
     };
   }
 );

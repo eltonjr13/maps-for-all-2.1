@@ -7,7 +7,7 @@ import { Card, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Download, Globe, Mail, MapPin, Phone, Star, Tag, Clock, Building2 } from 'lucide-react';
+import { Download, Globe, Mail, MapPin, Phone, Star, Tag, Clock, Building2, Map } from 'lucide-react';
 
 interface ResultsPanelProps {
   businesses: Business[];
@@ -90,16 +90,24 @@ const BusinessCardAccordion = ({ business, isLoadingDetails }: { business: Busin
                   <InfoLine icon={Star} text={business.rating ? `${business.rating} / 5` : undefined} />
                   <InfoLine icon={Clock} text={business.openingHours} />
                 </div>
-                {business.whatsappLink && (
-                  <div className="pt-2">
+                <div className="pt-2 space-y-2 sm:space-y-0 sm:flex sm:gap-2">
+                  {business.whatsappLink && (
                     <Button asChild className="w-full" aria-label={`Chamar ${business.name} no WhatsApp`}>
                       <a href={business.whatsappLink} target="_blank" rel="noopener noreferrer">
                         <WhatsAppIcon className="mr-2 h-5 w-5" />
                         Chamar no WhatsApp
                       </a>
                     </Button>
-                  </div>
-                )}
+                  )}
+                   {business.googleMapsUrl && (
+                    <Button asChild variant="secondary" className="w-full" aria-label={`Ver ${business.name} no Google Maps`}>
+                        <a href={business.googleMapsUrl} target="_blank" rel="noopener noreferrer">
+                            <Map className="mr-2 h-5 w-5" />
+                            Google Maps
+                        </a>
+                    </Button>
+                  )}
+                </div>
               </>
             ) : (
                 <div className="pt-2 text-center text-muted-foreground">

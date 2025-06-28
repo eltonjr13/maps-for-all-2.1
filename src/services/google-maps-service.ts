@@ -72,6 +72,7 @@ export async function getPlaceDetails(
     'rating',
     'opening_hours',
     'geometry',
+    'url',
   ];
 
   try {

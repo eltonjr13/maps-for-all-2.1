@@ -14,4 +14,5 @@ export type Business = {
   };
   internationalPhone?: string;
   whatsappLink?: string;
+  googleMapsUrl?: string;
 };
