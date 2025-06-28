@@ -1,5 +1,7 @@
-# Firebase Studio
+# MAPS FOR ALL 2.0
 
-This is a NextJS starter in Firebase Studio.
+UMA VERSÃO COMPLETAMENTE MELHORADA VISANDO FOCO TOTAL EM PROPRECTAÇÃO GERAL
 
-To get started, take a look at src/app/page.tsx.
+PS; CRIE O .ENV 
+CONFIGURE DA FORMA CORRETA
+SEJA FELIZ :)
