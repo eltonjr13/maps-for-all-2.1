@@ -2,6 +2,8 @@ import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
+  basePath: '/mapsforall',
+  assetPrefix: '/mapsforall/',
   typescript: {
     ignoreBuildErrors: true,
   },
