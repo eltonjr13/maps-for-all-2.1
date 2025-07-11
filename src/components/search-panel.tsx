@@ -5,9 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { Search, MapPin, Filter, Loader2 } from 'lucide-react';
+import { Search, MapPin, Filter, Loader2, Tag } from 'lucide-react';
 
 interface SearchPanelProps {
   onSearch: (criteria: { location: string; niche: string; radius: number }) => void;
@@ -16,7 +15,7 @@ interface SearchPanelProps {
 
 export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
   const [location, setLocation] = useState('São Paulo, SP');
-  const [niche, setNiche] = useState('clinica-medica');
+  const [niche, setNiche] = useState('contabilidade');
   const [radius, setRadius] = useState([5]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -31,7 +30,7 @@ export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
           <Filter className="w-6 h-6 text-primary" />
           Encontre seu Próximo Lead
         </CardTitle>
-        <CardDescription>Insira um local e um tipo de clínica para iniciar a prospecção.</CardDescription>
+        <CardDescription>Insira um local e um nicho de negócio para iniciar a prospecção.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -51,20 +50,18 @@ export function SearchPanel({ onSearch, isLoading }: SearchPanelProps) {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="niche">Tipo de Clínica</Label>
-            <Select value={niche} onValueChange={setNiche}>
-              <SelectTrigger id="niche" aria-label="Tipo de Clínica">
-                <SelectValue placeholder="Selecione um tipo de clínica" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="clinica-medica">Clínica Médica</SelectItem>
-                <SelectItem value="clinica-odontologica">Clínica Odontológica</SelectItem>
-                <SelectItem value="clinica-de-fisioterapia">Clínica de Fisioterapia</SelectItem>
-                <SelectItem value="clinica-de-estetica">Clínica de Estética</SelectItem>
-                <SelectItem value="clinica-de-psicologia">Clínica de Psicologia</SelectItem>
-                <SelectItem value="clinica-de-dermatologia">Clínica de Dermatologia</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label htmlFor="niche">Nicho de Negócio</Label>
+            <div className="relative">
+              <Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                id="niche"
+                aria-label="Nicho de Negócio"
+                placeholder="Ex: contabilidade, restaurante, etc."
+                value={niche}
+                onChange={(e) => setNiche(e.target.value)}
+                className="pl-10"
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
