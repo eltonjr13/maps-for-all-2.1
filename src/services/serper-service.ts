@@ -12,14 +12,6 @@ function checkApiKey() {
     return SERPER_API_KEY;
 }
 
-interface SearchPlacesParams {
-    q: string;
-    location?: string;
-    gl?: string;
-    hl?: string;
-    limit?: number;
-}
-
 export async function searchPlaces(query: string, location?: string, limit: number = 20) {
     const apiKey = checkApiKey();
     console.log('Buscando no Serper.dev (Places):', { query, location });
@@ -38,6 +30,7 @@ export async function searchPlaces(query: string, location?: string, limit: numb
                 hl: 'pt-br',
                 limit: limit,
             }),
+            cache: 'no-store', // Evita o cache da requisição
         });
 
         if (!response.ok) {
@@ -60,6 +53,8 @@ export async function getPlaceDetails(placeId: string) {
     console.log('Buscando detalhes do local no Serper.dev:', placeId);
 
     try {
+        // A API da Serper não tem um endpoint de "details" separado como a do Google.
+        // A busca por placeId é feita no mesmo endpoint /places.
         const response = await fetch(`${SERPER_API_URL}/places`, {
             method: 'POST',
             headers: {
@@ -67,10 +62,11 @@ export async function getPlaceDetails(placeId: string) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                q: `placeId:${placeId}`, // Usando o placeId para buscar detalhes específicos
+                q: `placeId:${placeId}`,
                 gl: 'br',
                 hl: 'pt-br',
             }),
+            cache: 'no-store',
         });
 
         if (!response.ok) {

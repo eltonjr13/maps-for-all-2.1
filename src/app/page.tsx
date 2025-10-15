@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { Business } from '@/types';
 import { SearchPanel } from '@/components/search-panel';
 import { ResultsPanel } from '@/components/results-panel';
 import { searchLeads } from '@/ai/flows/search-leads-flow';
 import { getLeadDetails } from '@/ai/flows/get-lead-details-flow';
 import { useToast } from '@/hooks/use-toast';
+import { MapPanel } from '@/components/map-panel';
 
 export default function Home() {
   const [results, setResults] = useState<Business[]>([]);
@@ -36,7 +37,7 @@ export default function Home() {
 
   const handleFetchDetails = async (businessId: string) => {
     const business = results.find(b => b.id === businessId);
-    if (loadingDetails.includes(businessId) || (business && business.phone)) {
+    if (!business || loadingDetails.includes(businessId) || business.phone) {
       return;
     }
 
@@ -57,14 +58,16 @@ export default function Home() {
       setLoadingDetails(prev => prev.filter(id => id !== businessId));
     }
   };
+  
+  const locations = useMemo(() => results.map(b => b.location).filter(l => l && l.lat && l.lng), [results]);
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-8">
-        <aside className="lg:col-span-1 lg:sticky lg:top-24 h-fit mb-8 lg:mb-0">
+    <div className="container mx-auto max-w-screen-2xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-8">
+        <aside className="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 h-fit mb-8 lg:mb-0">
           <SearchPanel onSearch={handleSearch} isLoading={isLoading} />
         </aside>
-        <main className="lg:col-span-2">
+        <main className="lg:col-span-4 xl:col-span-5">
           <ResultsPanel 
             businesses={results} 
             isLoading={isLoading} 
@@ -73,6 +76,9 @@ export default function Home() {
             loadingDetails={loadingDetails}
           />
         </main>
+        <aside className="hidden xl:block xl:col-span-4">
+          <MapPanel locations={locations} />
+        </aside>
       </div>
     </div>
   );

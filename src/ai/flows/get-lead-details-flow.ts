@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * @fileOverview Um fluxo para buscar detalhes completos de um lead de negócio usando seu ID do Google Maps.
+ * @fileOverview Um fluxo para buscar detalhes completos de um lead de negócio usando seu ID do Google Maps via Serper.dev.
  *
  * - getLeadDetails - Uma função que busca os detalhes de um negócio.
  * - GetLeadDetailsInput - O tipo de entrada para a função getLeadDetails.
@@ -16,7 +16,7 @@ const GetLeadDetailsInputSchema = z.object({
   businessId: z
     .string()
     .describe(
-      'O ID único do negócio (placeId) para o qual buscar detalhes.'
+      'O ID único do negócio (placeId da Serper) para o qual buscar detalhes.'
     ),
 });
 export type GetLeadDetailsInput = z.infer<typeof GetLeadDetailsInputSchema>;
@@ -27,7 +27,7 @@ const GetLeadDetailsOutputSchema = z.object({
     .string()
     .optional()
     .describe(
-      'O número de telefone formatado do negócio (formatted_phone_number).'
+      'O número de telefone formatado do negócio (phoneNumber).'
     ),
   internationalPhone: z
     .string()
@@ -43,15 +43,15 @@ const GetLeadDetailsOutputSchema = z.object({
     ),
   rating: z.number().optional().describe('A avaliação do negócio, de 1 a 5.'),
   openingHours: z
-    .string()
-    .optional()
+    .array(z.any()).optional() // A estrutura pode variar, então usamos `any` por segurança
     .describe(
-      'O horário de funcionamento do negócio (ex: "Aberto agora", "Fechado").'
+      'O horário de funcionamento do negócio.'
     ),
   googleMapsUrl: z
     .string()
     .optional()
-    .describe('A URL do negócio no Google Maps.'),
+    .describe('A URL do negócio no Google Maps (link).'),
+  address: z.string().optional().describe('O endereço do negócio.'),
 });
 export type GetLeadDetailsOutput = z.infer<typeof GetLeadDetailsOutputSchema>;
 
@@ -61,7 +61,7 @@ export async function getLeadDetails(
   console.log('Buscando detalhes para o businessId:', input.businessId);
   try {
     const result = await getLeadDetailsFlow(input);
-    console.log('Detalhes encontrados com sucesso para:', input.businessId);
+    console.log('Detalhes encontrados com sucesso para:', input.businessId, result);
     return result;
   } catch (error) {
     console.error('Erro ao buscar detalhes para o lead:', error);
@@ -81,31 +81,20 @@ const getLeadDetailsFlow = ai.defineFlow(
       throw new Error('Não foi possível obter detalhes para o lead.');
     }
 
-    const cleanedInternationalPhone = details.phoneNumber?.replace(
-      /\D/g,
-      ''
-    );
-    const whatsappLink = cleanedInternationalPhone
-      ? `https://wa.me/${cleanedInternationalPhone}`
+    const internationalPhone = details.phoneNumber?.replace(/\D/g, '');
+    const whatsappLink = internationalPhone
+      ? `https://wa.me/55${internationalPhone.replace(/^55/, '')}` // Garante o código do país
       : undefined;
-
-    let openingHoursText = 'Não disponível';
-    if (details.openingHours) {
-        // Esta é uma suposição, a API da Serper pode ter um formato diferente
-        // para 'openingHours'. Ajuste conforme necessário.
-        const isOpen = details.openingHours.some((h: any) => h.isOpen === true);
-        openingHoursText = isOpen ? 'Aberto agora' : 'Fechado';
-    }
-
 
     return {
       website: details.website,
       phone: details.phoneNumber,
-      internationalPhone: details.phoneNumber, // Serper.dev pode não fornecer um formato internacional separado
+      internationalPhone: internationalPhone,
       whatsappLink: whatsappLink,
       rating: details.rating,
-      openingHours: openingHoursText,
+      openingHours: details.openingHours,
       googleMapsUrl: details.link,
+      address: details.address,
     };
   }
 );

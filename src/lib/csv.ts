@@ -14,10 +14,10 @@ export function downloadCsv(data: Business[], filename: string = 'leads.csv') {
     'category', 
     'address', 
     'phone', 
-    'email', 
     'website', 
-    'rating', 
-    'openingHours'
+    'rating',
+    'googleMapsUrl',
+    'whatsappLink'
   ];
   
   // Define translated headers for the CSV file
@@ -26,17 +26,21 @@ export function downloadCsv(data: Business[], filename: string = 'leads.csv') {
     'categoria',
     'endereco',
     'telefone',
-    'email',
     'website',
     'avaliacao',
-    'horario_funcionamento'
+    'google_maps_url',
+    'whatsapp_link'
   ];
 
   const headerRow = translatedHeaders.map(h => `"${h}"`).join(',');
 
   const csvRows = data.map(row => {
     return headers.map(header => {
-      const value = (row as any)[header];
+      let value = (row as any)[header];
+      if (header === 'openingHours' && Array.isArray(value)) {
+        value = value.map(day => `${day.day}: ${day.hours}`).join(' | ');
+      }
+      
       if (value === null || value === undefined) {
         return '""';
       }
@@ -47,7 +51,7 @@ export function downloadCsv(data: Business[], filename: string = 'leads.csv') {
   });
 
   const csvString = [headerRow, ...csvRows].join('\n');
-  const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+  const blob = new Blob([`\uFEFF${csvString}`], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   

@@ -17,7 +17,7 @@ interface ResultsPanelProps {
   loadingDetails: string[];
 }
 
-const InfoLine = ({ icon: Icon, text, href }: { icon: React.ElementType, text?: string | number, href?: string }) => {
+const InfoLine = ({ icon: Icon, text, href, title }: { icon: React.ElementType, text?: string | number, href?: string, title?: string }) => {
   if (!text) return null;
 
   let linkHref = href;
@@ -29,9 +29,8 @@ const InfoLine = ({ icon: Icon, text, href }: { icon: React.ElementType, text?: 
     }
   }
 
-
   return (
-    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+    <div className="flex items-center gap-2 text-sm text-muted-foreground" title={title}>
       <Icon className="w-4 h-4 text-primary flex-shrink-0" />
       <div className="truncate">
         {linkHref ? (
@@ -39,7 +38,7 @@ const InfoLine = ({ icon: Icon, text, href }: { icon: React.ElementType, text?: 
             {String(text)}
           </a>
         ) : (
-          <span>{text}</span>
+          <span className="text-foreground">{text}</span>
         )}
       </div>
     </div>
@@ -60,7 +59,26 @@ const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const BusinessCardAccordion = ({ business, isLoadingDetails }: { business: Business, isLoadingDetails: boolean }) => {
-  const hasDetails = !!business.phone || !!business.website || !!business.email;
+  const hasDetails = !!business.phone || !!business.website || !!business.email || business.rating !== undefined;
+
+  const getOpeningHoursText = (openingHours: any): string => {
+    if (!openingHours || !Array.isArray(openingHours) || openingHours.length === 0) {
+      return "Não disponível";
+    }
+    // Lógica simplificada: verifica se algum dos horários indica que está aberto "hoje".
+    // A API da Serper pode não ter um booleano `isOpenNow`.
+    // Esta é uma heurística e pode precisar de ajuste.
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+    const todayHours = openingHours.find(day => day.day.toLowerCase() === today.toLowerCase());
+
+    if (todayHours && todayHours.hours) {
+      return `${todayHours.day}: ${todayHours.hours}`;
+    }
+    return "Verificar horário no site";
+  };
+  
+  const openingHoursText = getOpeningHoursText(business.openingHours);
+
 
   return (
     <AccordionItem value={business.id} className="border-none">
@@ -70,7 +88,7 @@ const BusinessCardAccordion = ({ business, isLoadingDetails }: { business: Busin
         </AccordionTrigger>
         <AccordionContent>
           <div className="px-6 pb-6 space-y-3">
-            <InfoLine icon={Tag} text={business.category} />
+            <InfoLine icon={Tag} text={business.category || 'Não categorizado'} />
             <InfoLine icon={MapPin} text={business.address} />
             <Separator />
             
@@ -83,14 +101,13 @@ const BusinessCardAccordion = ({ business, isLoadingDetails }: { business: Busin
             ) : hasDetails ? (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <InfoLine icon={Globe} text={business.website} />
-                  <InfoLine icon={Phone} text={business.phone} />
-                  <InfoLine icon={Phone} text={business.internationalPhone} />
-                  <InfoLine icon={Mail} text={business.email} href={business.email ? `mailto:${business.email}` : undefined} />
-                  <InfoLine icon={Star} text={business.rating ? `${business.rating} / 5` : undefined} />
-                  <InfoLine icon={Clock} text={business.openingHours} />
+                  <InfoLine icon={Globe} text={business.website} title="Website"/>
+                  <InfoLine icon={Phone} text={business.phone} title="Telefone"/>
+                  <InfoLine icon={Mail} text={business.email} href={business.email ? `mailto:${business.email}` : undefined} title="Email"/>
+                  <InfoLine icon={Star} text={business.rating ? `${business.rating} / 5` : undefined} title="Avaliação"/>
+                  <InfoLine icon={Clock} text={openingHoursText} title="Horário de Funcionamento"/>
                 </div>
-                <div className="pt-2 space-y-2 sm:space-y-0 sm:flex sm:gap-2">
+                <div className="pt-2 space-y-2 sm:flex sm:gap-2">
                   {business.whatsappLink && (
                     <Button asChild className="w-full" aria-label={`Chamar ${business.name} no WhatsApp`}>
                       <a href={business.whatsappLink} target="_blank" rel="noopener noreferrer">
@@ -139,6 +156,7 @@ export function ResultsPanel({ businesses, isLoading, hasSearched, onFetchDetail
   const handleAccordionToggle = (businessId: string) => {
     if (!businessId) return;
     const business = businesses.find(b => b.id === businessId);
+    // Verifica se já tem detalhes de telefone OU se já está carregando
     if (business && !business.phone && !loadingDetails.includes(businessId)) {
         onFetchDetails(businessId);
     }
@@ -150,7 +168,7 @@ export function ResultsPanel({ businesses, isLoading, hasSearched, onFetchDetail
         <h2 className="text-xl font-headline font-semibold text-foreground">
           {isLoading ? 'Buscando...' : `${businesses.length} Leads Encontrados`}
         </h2>
-        {businesses.length > 0 && (
+        {businesses.length > 0 && !isLoading && (
           <Button variant="outline" size="sm" onClick={handleExport} aria-label="Exportar resultados para CSV">
             <Download className="mr-2 h-4 w-4" />
             Exportar CSV

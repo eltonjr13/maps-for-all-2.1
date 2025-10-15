@@ -16,8 +16,9 @@ const BasicBusinessSchema = z.object({
   name: z.string().describe('O nome do negócio.'),
   address: z
     .string()
+    .optional()
     .describe('O endereço completo do negócio (address).'),
-  category: z.string().describe('A categoria principal do negócio.'),
+  category: z.string().optional().describe('A categoria principal do negócio.'),
   location: z.object({
     lat: z.number().describe('A latitude da localização do negócio.'),
     lng: z.number().describe('A longitude da localização do negócio.'),
@@ -76,15 +77,16 @@ const searchLeadsFlow = ai.defineFlow(
     console.log(`${places.length} locais encontrados pela API Serper.dev.`);
 
     const businesses = places
-      .map(place => {
+      .map((place: any) => {
         if (!place.placeId || !place.title || !place.gpsCoordinates) {
+          console.warn('Registro de local incompleto da Serper.dev, pulando:', place);
           return null;
         }
         return {
           id: place.placeId,
           name: place.title,
-          address: place.address || 'Endereço não disponível',
-          category: place.category || 'Não categorizado',
+          address: place.address,
+          category: place.category,
           location: {
             lat: place.gpsCoordinates.latitude,
             lng: place.gpsCoordinates.longitude,

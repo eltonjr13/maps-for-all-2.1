@@ -20,7 +20,7 @@ A Netlify é inteligente e geralmente detecta que seu projeto é construído com
 
 Verifique se as configurações estão assim (normalmente já estarão corretas):
 
--   **Build command:** `npm run build`
+-   **Build command:** `next build`
 -   **Publish directory:** `.next`
 
 ## Passo 3: Adicionar Variáveis de Ambiente (muito importante para o seu `.env`)
@@ -36,7 +36,6 @@ Suas chaves de API e outras informações sensíveis do arquivo `.env` **não de
 
 **Variáveis de Ambiente Necessárias:**
 -   `GOOGLE_API_KEY`: Sua chave de API do Google Cloud para Genkit (Gemini).
--   `GOOGLE_MAPS_API_KEY`: Sua chave de API do Google Cloud com a **Places API** ativada.
 -   `SERPER_API_KEY`: Sua chave de API do Serper.dev.
 
 Essas variáveis serão injetadas de forma segura durante o processo de build e estarão disponíveis para suas funções de backend (Genkit flows).
