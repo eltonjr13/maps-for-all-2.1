@@ -29,14 +29,15 @@ Suas chaves de API e outras informações sensíveis do arquivo `.env` **não de
 
 1.  Dentro das configurações do seu site na Netlify, vá para **"Site configuration"** > **"Build & deploy"** > **"Environment"**.
 2.  Na seção **"Environment variables"**, clique em **"Edit variables"**.
-3.  Adicione cada variável do seu arquivo `.env`. Por exemplo, se seu arquivo `.env` contém `GOOGLE_API_KEY=sua_chave_secreta_aqui`, você criará uma nova variável com:
-    -   **Key:** `GOOGLE_API_KEY`
+3.  Adicione cada variável do seu arquivo `.env`. Por exemplo, se seu arquivo `.env` contém `SERPER_API_KEY=sua_chave_secreta_aqui`, você criará uma nova variável com:
+    -   **Key:** `SERPER_API_KEY`
     -   **Value:** `sua_chave_secreta_aqui`
 4.  Clique em **"Save"**. Repita o processo para todas as variáveis necessárias.
 
 **Variáveis de Ambiente Necessárias:**
 -   `GOOGLE_API_KEY`: Sua chave de API do Google Cloud para Genkit (Gemini).
--   `GOOGLE_MAPS_API_KEY`: Sua chave de API do Google Cloud com a **Places API** ativada. **É crucial que a API Places esteja habilitada para esta chave.**
+-   `GOOGLE_MAPS_API_KEY`: Sua chave de API do Google Cloud com a **Places API** ativada.
+-   `SERPER_API_KEY`: Sua chave de API do Serper.dev.
 
 Essas variáveis serão injetadas de forma segura durante o processo de build e estarão disponíveis para suas funções de backend (Genkit flows).
 

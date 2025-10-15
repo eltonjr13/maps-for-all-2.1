@@ -10,13 +10,13 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'zod';
-import {getPlaceDetails as getPlaceDetailsFromService} from '@/services/google-maps-service';
+import { getPlaceDetails as getPlaceDetailsFromSerper } from '@/services/serper-service';
 
 const GetLeadDetailsInputSchema = z.object({
   businessId: z
     .string()
     .describe(
-      'O ID único do negócio (place_id) para o qual buscar detalhes.'
+      'O ID único do negócio (placeId) para o qual buscar detalhes.'
     ),
 });
 export type GetLeadDetailsInput = z.infer<typeof GetLeadDetailsInputSchema>;
@@ -76,12 +76,12 @@ const getLeadDetailsFlow = ai.defineFlow(
     outputSchema: GetLeadDetailsOutputSchema,
   },
   async ({businessId}) => {
-    const details = await getPlaceDetailsFromService(businessId);
+    const details = await getPlaceDetailsFromSerper(businessId);
     if (!details) {
       throw new Error('Não foi possível obter detalhes para o lead.');
     }
 
-    const cleanedInternationalPhone = details.international_phone_number?.replace(
+    const cleanedInternationalPhone = details.phoneNumber?.replace(
       /\D/g,
       ''
     );
@@ -90,20 +90,22 @@ const getLeadDetailsFlow = ai.defineFlow(
       : undefined;
 
     let openingHoursText = 'Não disponível';
-    if (details.opening_hours) {
-      openingHoursText = details.opening_hours.open_now
-        ? 'Aberto agora'
-        : 'Fechado';
+    if (details.openingHours) {
+        // Esta é uma suposição, a API da Serper pode ter um formato diferente
+        // para 'openingHours'. Ajuste conforme necessário.
+        const isOpen = details.openingHours.some((h: any) => h.isOpen === true);
+        openingHoursText = isOpen ? 'Aberto agora' : 'Fechado';
     }
+
 
     return {
       website: details.website,
-      phone: details.formatted_phone_number,
-      internationalPhone: details.international_phone_number,
+      phone: details.phoneNumber,
+      internationalPhone: details.phoneNumber, // Serper.dev pode não fornecer um formato internacional separado
       whatsappLink: whatsappLink,
       rating: details.rating,
       openingHours: openingHoursText,
-      googleMapsUrl: details.url,
+      googleMapsUrl: details.link,
     };
   }
 );

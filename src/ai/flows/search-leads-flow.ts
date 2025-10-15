@@ -1,6 +1,6 @@
 'use server';
 /**
- * @fileOverview Um fluxo para buscar leads de negócios usando a API do Google Maps.
+ * @fileOverview Um fluxo para buscar leads de negócios usando a API do Serper.dev.
  *
  * - searchLeads - Uma função que encontra leads de negócios com base em critérios de busca.
  * - SearchLeadsInput - O tipo de entrada para a função searchLeads.
@@ -9,14 +9,14 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'zod';
-import {searchPlacesByText} from '@/services/google-maps-service';
+import { searchPlaces } from '@/services/serper-service';
 
 const BasicBusinessSchema = z.object({
-  id: z.string().describe('Um identificador único para o negócio (place_id).'),
+  id: z.string().describe('Um identificador único para o negócio (placeId).'),
   name: z.string().describe('O nome do negócio.'),
   address: z
     .string()
-    .describe('O endereço completo do negócio (formatted_address).'),
+    .describe('O endereço completo do negócio (address).'),
   category: z.string().describe('A categoria principal do negócio.'),
   location: z.object({
     lat: z.number().describe('A latitude da localização do negócio.'),
@@ -65,32 +65,29 @@ const searchLeadsFlow = ai.defineFlow(
     inputSchema: SearchLeadsInputSchema,
     outputSchema: SearchLeadsOutputSchema,
   },
-  async ({location, niche, radius}) => {
+  async ({location, niche}) => {
     console.log(
-      'Dentro do searchLeadsFlow. Chamando o serviço do Google Maps...'
+      'Dentro do searchLeadsFlow. Chamando o serviço do Serper.dev...'
     );
 
     const query = `${niche} em ${location}`;
-    const places = await searchPlacesByText(query, radius);
+    const places = await searchPlaces(query);
 
-    console.log(`${places.length} locais encontrados pela API.`);
+    console.log(`${places.length} locais encontrados pela API Serper.dev.`);
 
     const businesses = places
       .map(place => {
-        if (!place.place_id || !place.name || !place.geometry?.location) {
+        if (!place.placeId || !place.title || !place.gpsCoordinates) {
           return null;
         }
         return {
-          id: place.place_id,
-          name: place.name,
-          address: place.formatted_address || 'Endereço não disponível',
-          category:
-            place.types
-              ?.find(t => t !== 'point_of_interest' && t !== 'establishment')
-              ?.replace(/_/g, ' ') || 'Não categorizado',
+          id: place.placeId,
+          name: place.title,
+          address: place.address || 'Endereço não disponível',
+          category: place.category || 'Não categorizado',
           location: {
-            lat: place.geometry.location.lat,
-            lng: place.geometry.location.lng,
+            lat: place.gpsCoordinates.latitude,
+            lng: place.gpsCoordinates.longitude,
           },
         };
       })
